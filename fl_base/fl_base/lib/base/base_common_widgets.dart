@@ -1,6 +1,8 @@
+import 'package:fl_base/base/base_mixin.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'base_controller.dart';
+import 'dart:io' show Platform;
 
 class BaseCommonWidgets implements _CommonWidgetsInterface {
   @override
@@ -85,8 +87,88 @@ class BaseCommonWidgets implements _CommonWidgetsInterface {
               child: const CircularProgressIndicator()),
         ),
       ),
-      barrierDismissible: false,
+      barrierDismissible: true,
       name: "Loading Dialog",
+    );
+  }
+
+  @override
+  void showConfirmDialog({
+    String? title,
+    String? message,
+    required Function onAccept,
+    String? cancelText,
+    String? acceptText,
+  }) {
+    Platform.isAndroid
+        ? showDialog(
+            context: Get.context!,
+            builder: (context) {
+              return AlertDialog(
+                title: _buildText(title: title),
+                content: _buildText(title: message),
+                actions: <Widget>[
+                  _textButton(
+                    context: context,
+                    title: acceptText ?? 'Yes',
+                    onPressed: () {},
+                  ),
+                  _textButton(
+                    context: context,
+                    title: cancelText ?? 'No',
+                    onPressed: () => Get.back(),
+                  )
+                ],
+              );
+            })
+        : showDialog(
+            context: Get.context!,
+            builder: (context) {
+              return CupertinoAlertDialog(
+                title: _buildText(title: title),
+                content: _buildText(title: message),
+                actions: <Widget>[
+                  _textButton(
+                    context: context,
+                    title: acceptText ?? 'Yes',
+                    onPressed: () {},
+                  ),
+                  _textButton(
+                    context: context,
+                    title: cancelText ?? 'No',
+                    onPressed: () => Get.back(),
+                  )
+                ],
+              );
+            });
+  }
+
+  Widget _buildText({String? title}) {
+    return title != null
+        ? Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          )
+        : const SizedBox();
+  }
+
+  TextButton _textButton({
+    required BuildContext context,
+    required String title,
+    required Function() onPressed,
+  }) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 
@@ -154,7 +236,13 @@ abstract class _CommonWidgetsInterface {
   void showSimpleSuccessSnackBar({String message = ""});
 
   void showLoadingDialog();
-
+  void showConfirmDialog({
+    required String? title,
+    required String? message,
+    required Function onAccept,
+    String? cancelText,
+    String? acceptText,
+  });
   void showAlert(
       {String title = "Alert",
       TextStyle titleStyle,

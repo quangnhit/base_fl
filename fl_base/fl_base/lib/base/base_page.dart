@@ -1,9 +1,10 @@
+import 'package:fl_base/base/base_common_widgets.dart';
 import 'package:fl_base/base/base_controller.dart';
 import 'package:fl_base/base/base_mixin.dart';
 import 'package:fl_base/global/app_dimension.dart';
 
 abstract class BaseScreen<T extends GetxController> extends StatelessWidget
-    with BaseMixin, RouteAware, AppSized {
+    with BaseCommonWidgets, BaseMixin, RouteAware, AppSized {
   BaseScreen({T? screenController, this.tag, bool isKeep = false, Key? key})
       : super(key: key) {
     if (screenController == null) {
